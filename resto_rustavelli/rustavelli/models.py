@@ -1,14 +1,15 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
 
 class Meals(models.Model):
     rating = (
-        ('5', '5'),
-        ('4', '4'),
-        ('3', '3'),
-        ('2', '2'),
-        ('1', '1'),
+        ('5/5', '5/5'),
+        ('4/5', '4/5'),
+        ('3/5', '3/5'),
+        ('2/5', '2/5'),
+        ('1/5', '1/5'),
     )
     image = models.ImageField(blank=True)
     name = models.CharField(max_length=200)
@@ -33,7 +34,7 @@ class Order(models.Model):
     )
     meal = models.ForeignKey(Meals, on_delete=models.SET_NULL, null=True, related_name='orders')
     date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(choices=status, max_length=100)
+    status = models.CharField(choices=status, max_length=100, default='not ready')
     table = models.IntegerField()
     waiter = models.ForeignKey('Staff', on_delete=models.SET_NULL, null=True, related_name='staff')
 
@@ -57,14 +58,27 @@ class Staff(models.Model):
         ('middle', 'middle'),
         ('master', 'master'),
     )
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
     role = models.CharField(choices=role, max_length=100)
     exp = models.CharField(choices=exp, max_length=20)
     image = models.ImageField()
     date_entry = models.DateTimeField(auto_now_add=True)
+    # is_active = models.BooleanField()
+    # is_staff = models.BooleanField(
+    #     ('staff status'),
+    #     default = False,
+    #     help_text=('Designates whether the user can log into the admin')
+    # )
+    # is_superuser = models.BooleanField()
+    #
+    # USERNAME_FIELD = 'username'
+    # REQUIRED_FIELDS = ['email']
+
+
 
     def __str__(self):
-        return self.name + '' + self.role
+        return self.name + ' ' + self.role
 
     class Meta:
         verbose_name = 'Персонала'
