@@ -5,8 +5,6 @@ from .models import Meals, Order, Staff, Bill
 class MealSerializer(serializers.ModelSerializer):
     price_sale = serializers.SerializerMethodField('get_price_sale')
 
-
-
     class Meta:
         model = Meals
         fields = ['id', 'image', 'name', 'description', 'price', 'rate', 'sale', 'price_sale']
@@ -17,13 +15,14 @@ class MealSerializer(serializers.ModelSerializer):
         return obj.price
 
 class OrderSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(read_only=True)
+    staff = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id', 'meal', 'table', 'waiter', 'status']
+        fields = ['id', 'meal', 'table', 'staff', 'status']
 
 
 class StaffSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Staff
         fields = ['id', 'image', 'name', 'role', 'exp']
@@ -37,11 +36,16 @@ class BillSerializer(serializers.ModelSerializer):
 
     def get_total_price_sale(self, obj):
         total = 0
+        table = 0
         orders = Order.objects.all()
         for order in orders:
             total += order.meal.price
         # total = obj.order.meal.price + (obj.price * 0.15)
         return total
+
+
+
+
 
 
 
