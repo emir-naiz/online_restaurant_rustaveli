@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 
 # Create your models here.
@@ -45,7 +45,7 @@ class Order(models.Model):
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
-class Staff(models.Model):
+class Staff(AbstractUser):
     role = (
         ('chef', 'chef'),
         ('waiter', 'waiter'),
@@ -58,31 +58,28 @@ class Staff(models.Model):
         ('middle', 'middle'),
         ('master', 'master'),
     )
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
     role = models.CharField(choices=role, max_length=100)
     exp = models.CharField(choices=exp, max_length=20)
     image = models.ImageField()
     date_entry = models.DateTimeField(auto_now_add=True)
     # is_active = models.BooleanField()
-    # is_staff = models.BooleanField(
-    #     ('staff status'),
-    #     default = False,
-    #     help_text=('Designates whether the user can log into the admin')
-    # )
-    # is_superuser = models.BooleanField()
-    #
-    # USERNAME_FIELD = 'username'
-    # REQUIRED_FIELDS = ['email']
+    is_staff = models.BooleanField(
+        ('staff status'),
+        default=False,
+        help_text=('Designates whether the user can log into the admin')
+    )
+    is_superuser = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
 
-
-    def __str__(self):
-        return self.name + ' ' + self.role
 
     class Meta:
         verbose_name = 'Персонала'
         verbose_name_plural = 'Персонал'
+
 
 class Bill(models.Model):
     order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True, related_name='bill')
