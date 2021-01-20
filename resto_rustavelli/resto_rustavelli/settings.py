@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rustavelli',
     'rest_framework',
 ]
-# AUTH_USER_MODEL = 'resto_rustavelli.Staff',
+AUTH_USER_MODEL = 'rustavelli.Staff'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
