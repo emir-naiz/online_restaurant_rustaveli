@@ -16,10 +16,10 @@ class MealSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     status = serializers.CharField(read_only=True)
-    staff = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    waiter = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id', 'meal', 'table', 'staff', 'status']
+        fields = ['id', 'meal', 'table', 'waiter', 'status']
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -37,11 +37,18 @@ class BillSerializer(serializers.ModelSerializer):
     def get_total_price_sale(self, obj):
         total = 0
         table = 0
+        sale = 0
         orders = Order.objects.all()
+        # for order in orders:
+        #     total += order.meal.price
+        # # total = obj.order.meal.price + (obj.price * 0.15)
+        # return total
+
         for order in orders:
             total += order.meal.price
-        # total = obj.order.meal.price + (obj.price * 0.15)
-        return total
+            sale = total - total * 15 // 100
+
+        return sale
 
 
 
